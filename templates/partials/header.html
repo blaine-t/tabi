@@ -11,13 +11,16 @@
     {# Site title #}
     <title>{%- include "partials/title.html" -%}</title>
 
+    {# Headshot Preload #}
+    {% if section.extra.header %}
+    {%- set image_path = get_url(path=section.extra.header.img, trailing_slash=false) | safe -%}
+        <link rel="preload" as="image" href="{{ image_path }}">
+    {%- endif -%}
+
     {# Favicon #}
-    {% if config.extra.favicon %}
-        <link rel="icon" type="image/png" href="{{ get_url(path=config.extra.favicon) }}"/>
-    {% endif %}
-    {% if config.extra.favicon_emoji %}
-        <link rel=icon href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="50%" x="50%" dominant-baseline="central" text-anchor="middle" font-size="88">{{ config.extra.favicon_emoji }}</text></svg>'>
-    {% endif %}
+    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="icon" href="/favicon.ico" sizes="32x32">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
     {# Feeds #}
     {% if config.generate_feeds | default(value=config.generate_feed) %}
