@@ -1,5 +1,6 @@
 @use 'parts/_admonitions.scss';
 @use 'parts/_archive.scss';
+@use 'parts/_aside.scss';
 @use 'parts/_cards.scss';
 @use 'parts/_code.scss';
 @use 'parts/_comments.scss';
@@ -22,6 +23,7 @@
 @use 'parts/_tags.scss';
 @use 'parts/_theme-switch.scss';
 @use 'parts/_zola-error.scss';
+@use 'parts/_webmention.scss';
 
 @font-face {
     src: local('Inter'),
@@ -98,6 +100,9 @@
     --serif-font: 'Source Serif', 'Georgia', serif;
     --code-font: 'Cascadia Code';
 
+    scrollbar-color: var(--primary-color) transparent;
+    accent-color: var(--primary-color);
+
     line-height: 190%;
     font-family: var(--sans-serif-font);
 }
@@ -158,6 +163,7 @@ body {
 
 article {
     $base-margin: 6rem;
+    position: relative;
     margin: 0 auto;
 
     max-width: calc(var(--max-layout-width) - 2*$base-margin);
@@ -191,7 +197,7 @@ article {
 }
 
 .section-title {
-    display: block;
+    display: flex;
     margin: 0;
     margin-top: -0.15em;
     color: var(--text-color-high-contrast);

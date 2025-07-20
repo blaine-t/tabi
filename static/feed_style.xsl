@@ -14,7 +14,8 @@
         <meta charset="utf-8"/>
         <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        <link rel="stylesheet" href="{/atom:feed/@xml:base}/main.css"/>
+        <xsl:variable name="baseUrl" select="/atom:feed/tabi:metadata/tabi:base_url"/>
+        <link rel="stylesheet" href="{$baseUrl}/main.css"/>
         <link rel="stylesheet" href="{/atom:feed/atom:link[@rel='extra-stylesheet']/@href}" />
 
       </head>
@@ -60,8 +61,8 @@
             <xsl:variable name="post_listing_date" select="/atom:feed/tabi:metadata/tabi:post_listing_date"/>
             <div class="bloglist-container">
               <xsl:for-each select="/atom:feed/atom:entry">
-                <section class="bloglist-row bottom-divider">
-                  <ul class="bloglist-meta">
+                <section class="bloglist-meta bottom-divider">
+                  <ul>
                     <xsl:variable name="show_date" select="$post_listing_date = 'date' or $post_listing_date = 'both'"/>
                     <xsl:variable name="show_updated" select="$post_listing_date = 'updated' or $post_listing_date = 'both'"/>
 
@@ -87,7 +88,9 @@
                       </li>
                     </xsl:if>
                   </ul>
-                  <div class="bloglist-content">
+                </section>
+                <section class="bloglist-content bottom-divider">
+                  <div>
                     <div class="bloglist-title">
                       <a>
                         <xsl:attribute name="href">

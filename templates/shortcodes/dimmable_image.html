@@ -1,5 +1,5 @@
 {#- Determine image path based on whether the src is remote or local -#}
-{%- if src is starting_with("http") -%}
+{%- if src is starting_with("http") or raw_path -%}
     {%- set image_url = src -%}
 {%- else -%}
     {%- set colocated_path = page.colocated_path | default(value="") -%}
@@ -7,9 +7,10 @@
 
     {#- Fallback to absolute path if relative path doesn't work -#}
     {%- if not meta -%}
-        {%- set image_url = get_url(path=src) -%}
+        {%- set meta = get_image_metadata(path=src, allow_missing=true) -%}
+        {%- set image_url = get_url(path=src, cachebust=true) -%}
     {%- else -%}
-        {%- set image_url = get_url(path=relative_path) -%}
+        {%- set image_url = get_url(path=relative_path, cachebust=true) -%}
     {%- endif -%}
 {%- endif -%}
 

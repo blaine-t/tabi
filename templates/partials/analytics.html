@@ -20,12 +20,12 @@
     <script async defer
     {% if self_hosted_url %}
         data-website-id="{{ analytics_id }}"
-        src="{{ self_hosted_url ~ '/umami.js' }}"
+        src="{{ self_hosted_url ~ '/script.js' }}"
     {% else %}
         data-website-id="{{ analytics_id }}"
-        src="https://analytics.eu.umami.is/script.js"
+        src="https://cloud.umami.is/script.js"
     {% endif %}
-    data-do-not-track="true">
+    {% if config.extra.analytics.do_not_track %}data-do-not-track="true"{% endif %}>
     </script>
 
     {% elif analytics_service == "plausible" %}

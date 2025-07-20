@@ -1,7 +1,7 @@
 +++
 title = "Custom shortcodes"
 date = 2023-02-19
-updated = 2024-09-22
+updated = 2025-05-18
 description = "This theme includes some useful custom shortcodes that you can use to enhance your posts. Whether you want to display images that adapt to light and dark themes, or format a professional-looking reference section, these custom shortcodes have got you covered."
 
 [taxonomies]
@@ -11,7 +11,7 @@ tags = ["showcase", "shortcodes"]
 toc = true
 toc_levels = 2
 quick_navigation_buttons = true
-add_src_to_code_block = true
+code_block_name_links = true
 mermaid = true
 social_media_card = "social_cards/blog_shortcodes.jpg"
 +++
@@ -28,7 +28,7 @@ To include a Mermaid diagram in your post, there are two steps:
 
 2. Use the `mermaid()` shortcode to define your diagram in your posts. For example:
 
-```plaintext
+```txt
 {%/* mermaid() */%}
 classDiagram
     class CognitiveDistortions {
@@ -91,12 +91,25 @@ The Mermaid shortcode supports two parameters:
 
 {{ admonition(type="tip", text="You can use the [Mermaid Live Editor](https://mermaid.live/) to create and preview your diagrams.") }}
 
+#### Usage
+
+```
+{%/* mermaid(invertible=true, full_width=false) */%}
+
+Your diagram goes here.
+
+`invertible` or `full_width` can be omitted if default values are used.
+
+{%/* end */%}
+```
+
 ## Image shortcodes
 
 All image shortcodes support absolute paths, relative paths, and remote sources in the `src` parameter.
 
-All image shortcodes have three optional parameters:
+All image shortcodes have these optional parameters:
 
+- `raw_path`. Defaults to `false`. If set to `true`, the `src` parameter will be used as is. Useful for colocated assets with a custom slug (see [Zola issue #2598](https://github.com/getzola/zola/issues/2598)).
 - `inline`. Defaults to `false`. If set to `true`, the image will be displayed inline with the text.
 - `full_width`. Defaults to `false` (see [below](#full-width-image))
 - `lazy_loading`. Defaults to `true`.
@@ -108,6 +121,7 @@ Useful if you want to use a different image for the light and dark themes:
 {{ dual_theme_image(light_src="img/paris_day.webp", dark_src="img/paris_night.webp" alt="The Eiffel tower") }}
 
 #### Usage
+
 ```
 {{/* dual_theme_image(light_src="img/paris_day.webp", dark_src="img/paris_night.webp" alt="The Eiffel tower") */}}
 ```
@@ -138,7 +152,7 @@ Images with too much brightness or contrast can be jarring against a dark backgr
 
 ### Swap image on hover
 
-Povides an interaction where the image displayed changes as the user hovers over it. Useful for before-after comparisons, for example.
+Provides an interaction where the image displayed changes as the user hovers over it. Useful for before-after comparisons, for example.
 
 {{ image_hover(default_src="img/edited.webp", hovered_src="img/raw.webp", default_alt="Edited picture", hovered_alt="Original shot") }}
 
@@ -178,30 +192,82 @@ All other image shortcodes can be made into full-width by setting the optional p
 
 ### Show source or path
 
-Display a path or URL on the next code block found. If it starts with "http", it will become a link. Particularly useful when used in conjunction with the [remote text shortcode](#remote-text).
+You can display a path or URL for a code block using Zola's native syntax:
 
-{{ add_src_to_code_block(src="https://github.com/welpo/doteki/blob/main/.gitignore") }}
-
-```.gitignore
-{{ remote_text(src="https://raw.githubusercontent.com/welpo/doteki/main/.gitignore") }}
-```
-
-{{ admonition(type="warning", title="IMPORTANT", text="This feature requires JavaScript. To enable it, set `add_src_to_code_block = true` on the `[extra]` section of your page, section, or `config.toml`.") }}
-
-#### Usage
+{{ aside(text="Requires Zola 0.20.0 or later.") }}
 
 ````
-{{/* add_src_to_code_block(src="https://github.com/welpo/doteki/blob/main/.gitignore") */}}
+```rust,name=src/main.rs
+fn main() {
+    println!("Hello, world!");
+}
+```
+````
 
-```.gitignore
+This renders:
+
+```rust,name=src/main.rs
+fn main() {
+    println!("Hello, world!");
+}
+```
+
+If you set the `name` to a URL (i.e. it starts with `http` or `https`), you can turn it into a clickable link. This is particularly useful when used in conjunction with the [remote text shortcode](#remote-text).
+
+{{ admonition(type="warning", title="JavaScript required", text="The clickable URL feature requires JavaScript. To enable it, set `code_block_name_links = true` on the `[extra]` section of your page, section, or `config.toml`.") }}
+
+```.gitignore,name=https://github.com/welpo/doteki/blob/main/.gitignore
 __pycache__/
 *coverage*
 .vscode/
 dist/
 ```
-````
+
+### Legacy shortcode support
+
+The `add_src_to_code_block` shortcode is still supported for backward compatibility but will be deprecated in a future release. Please use Zola's native syntax shown above instead:
+
+```
+# Old way (deprecated):
+{{/* add_src_to_code_block(src="path/to/file.rs") */}}
+
+# New way (preferred):
+```rust,name=path/to/file.rs
+```
 
 ## Text shortcodes
+
+### Aside (side/margin note)
+
+Add supplementary content in the margins on wide screens, or as distinct blocks on mobile.
+
+{{ aside(text="*Sidenote* comes from Latin *nota* ('mark') + Old English *síde* ('side').") }}
+
+The shortcode accepts two parameters:
+
+- `position`: Set to `"right"` to place in right margin (defaults to left)
+- Content can be provided via `text` parameter or between shortcode tags
+
+#### Usage
+
+{{ admonition(type="warning", text="Place the aside shortcode on its own line to prevent formatting issues.") }}
+
+Using the `text` parameter:
+
+```
+{{/* aside(text="*Sidenote* comes from Latin *nota* ('mark') + Old English *síde* ('side').") */}}
+```
+
+Using the content body and setting the position to right:
+
+```
+{%/* aside(position="right") */%}
+A longer note that
+can span multiple lines.
+
+_Markdown_ is supported.
+{%/* end */%}
+```
 
 ### Remote text
 
@@ -263,20 +329,36 @@ You can change the `title` and `icon` of the admonition. Both parameters take a 
 
 #### Usage
 
-```
+You can use admonitions in two ways:
+
+1. Inline with parameters:
+
+```md
 {{/* admonition(type="danger", icon="tip", title="An important tip", text="Stay hydrated~") */}}
 ```
+
+2. With a content body:
+
+```md
+{%/* admonition(type="danger", icon="tip", title="An important tip") */%}
+Stay hydrated~
+
+This method is particularly useful for longer content or multiple paragraphs.
+{%/* end */%}
+```
+
+Both methods support the same parameters (`type`, `icon`, and `title`), with the content either passed as the `text` parameter or as the body between tags.
 
 ### Multilingual quotes
 
 This shortcode allows you to display both the translated and original text for a quote. The quotation marks will be added automatically:
 
-{{ multilingual_quote(original="Qué sosiego, ir por la vida en silencio, saludando sólo a los amigos.", translated="What tranquility, to go through life in silence, greeting only friends.", author="Francisco Umbral") }}
+{{ multilingual_quote(original="Qué sosiego, ir por la vida en silencio, saludando sólo a los amigos.", translated="What tranquillity, to go through life in silence, greeting only friends.", author="Francisco Umbral") }}
 
 #### Usage
 
 ```
-{{/* multilingual_quote(original="Qué sosiego, ir por la vida en silencio, saludando sólo a los amigos.", translated="What tranquility, to go through life in silence, greeting only friends.", author="Francisco Umbral") */}}
+{{/* multilingual_quote(original="Qué sosiego, ir por la vida en silencio, saludando sólo a los amigos.", translated="What tranquillity, to go through life in silence, greeting only friends.", author="Francisco Umbral") */}}
 ```
 
 ### References with hanging indent
@@ -350,3 +432,33 @@ Markdown will of course be rendered.
 
 {%/* end */%}
 ```
+
+### Force text direction
+
+Force the text direction of a content block. Overrides both the global `force_codeblock_ltr` setting and the document's overall direction.
+
+Accepts the parameter `direction`: the desired text direction. This can be either "ltr" (left-to-right) or "rtl" (right-to-left). Defaults to "ltr".
+
+{% force_text_direction(direction="rtl") %}
+
+```python
+def مرحبا_بالعالم():
+    print("مرحبا بالعالم!")
+```
+
+{% end %}
+
+#### Usage
+
+In a LTR page we can force a code block to be RTL (as shown above) like so:
+
+````
+{%/* force_text_direction(direction="rtl") */%}
+
+```python
+def مرحبا_بالعالم():
+    print("مرحبا بالعالم!")
+```
+
+{%/* end */%}
+````
