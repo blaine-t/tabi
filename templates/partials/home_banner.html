@@ -14,7 +14,14 @@
     {%- set image_path = get_url(path=header.img, trailing_slash=false) | safe -%}
     {%- endif -%}
     <div id="image-container-home">
-        <img fetchpriority="high" alt="{{ header.img_alt | default(value="the owner") }}" id="banner-home-img" src="{{ image_path }}" width="192px" height="192px" />
+        <picture>
+             <source srcset="{{ image_path }} 192w" type="image/avif" />
+             {% if header.webp %} <source srcset="{{ get_url(path=header.webp) }} 192w" type="image/webp" /> {% endif %}
+             {% if header.png %} <source srcset="{{ get_url(path=header.png) }} 192w" type="image/png" /> {% endif %}
+             {% if header.jpg %} <source srcset="{{ get_url(path=header.jpg) }} 192w" type="image/jpg" /> {% endif %}
+
+             <img fetchpriority="high" alt="{{ header.img_alt | default(value="the owner") }}" id="banner-home-img" src="{{ image_path }}" width="192px" height="192px" />
+        </picture>
     </div>
     {%- endif -%}
 </div>

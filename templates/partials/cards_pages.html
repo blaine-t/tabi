@@ -20,11 +20,14 @@
             {% endif %}>
             {% if page.extra.local_image %}
                 {% set meta = get_image_metadata(path=page.extra.local_image, allow_missing=true) %}
-                <img class="card-image"
-                    alt="{{ page.extra.local_image }}"
-                    src="{{ get_url(path=page.extra.local_image) }}"
-                    {% if meta.width %}width="{{ meta.width }}"{% endif %}
-                    {% if meta.height %}height="{{ meta.height }}"{% endif %}>
+                <picture>
+                     <source srcset="{{ get_url(path=page.extra.local_image) }} {{ meta.width }}w" type="image/avif" />
+                     {% if page.extra.local_image_webp %} <source srcset="{{ get_url(path=page.extra.local_image_webp) }} {{ meta.width }}w" type="image/webp" /> {% endif %}
+                     {% if page.extra.local_image_png %} <source srcset="{{ get_url(path=page.extra.local_image_png) }} {{ meta.width }}w" type="image/png" /> {% endif %}
+                     {% if page.extra.local_image_jpg %} <source srcset="{{ get_url(path=page.extra.local_image_jpg) }} {{ meta.width }}w" type="image/jpg" /> {% endif %}
+
+                     <img loading="lazy" class="card-image" alt="{{ page.extra.local_image }}.avif" src="{{ get_url(path=page.extra.local_image) }}" width="600px" height="600px" />
+                </picture>
             {% elif page.extra.remote_image %}
                 <img class="card-image"
                     alt="{{ page.extra.remote_image }}"

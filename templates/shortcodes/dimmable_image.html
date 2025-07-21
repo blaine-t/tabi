@@ -24,7 +24,14 @@
 {%- if full_width -%}
     <div class="full-width">
 {%- endif -%}
-<img class="{{ class_list }}" src="{{ image_url }}"{% if lazy_loading %} loading="lazy"{% endif %}{% if alt %} alt="{{ alt }}"{% endif %}{% if meta.width %} width="{{ meta.width }}"{% endif %}{% if meta.height %} height="{{ meta.height }}" {% endif %}/>
+<picture>
+     <source srcset="{{ image_url }} {{ meta.width }}w" type="image/avif" />
+     {% if webp %} <source srcset="{{ get_url(path=webp) }} {{ meta.width }}w" type="image/webp" /> {% endif %}
+     {% if png %} <source srcset="{{ get_url(path=png) }} {{ meta.width }}w" type="image/png" /> {% endif %}
+     {% if jpg %} <source srcset="{{ get_url(path=jpg) }} {{ meta.width }}w" type="image/jpg" /> {% endif %}
+     
+     <img class="{{ class_list }}" src="{{ image_url }}"{% if lazy_loading %} loading="lazy"{% endif %}{% if alt %} alt="{{ alt }}"{% endif %}{% if meta.width %} width="{{ meta.width }}"{% endif %}{% if meta.height %} height="{{ meta.height }}" {% endif %}/>
+</picture>
 {%- if full_width -%}
     </div>
 {%- endif -%}
