@@ -1,7 +1,7 @@
 +++
 title = "Custom shortcodes"
 date = 2023-02-19
-updated = 2025-05-18
+updated = 2025-10-21
 description = "This theme includes some useful custom shortcodes that you can use to enhance your posts. Whether you want to display images that adapt to light and dark themes, or format a professional-looking reference section, these custom shortcodes have got you covered."
 
 [taxonomies]
@@ -188,6 +188,28 @@ All other image shortcodes can be made into full-width by setting the optional p
 {{/* full_width_image(src="img/amsterdam_by_oskerwyld.webp", alt="Photograph of a canal in Amsterdam") */}}
 ```
 
+## Engagement shortcodes
+
+### iine
+
+{{ aside(text="To add it to all posts, set `iine = true` in the `[extra]` section of your `config.toml`.") }}
+
+This shortcode allows you to add extra [iine.to](https://iine.to) buttons to your posts, like this:
+
+{{ iine(slug="/blog/shortcodes/demo-button") }}
+
+#### Usage
+
+```
+{{/* iine(icon="heart", slug="/post/my-post-slug/like", label="Like this post") */}}
+```
+
+The shortcode takes the following optional parameters:
+
+- `icon`: The icon to display. Can be `heart`, `thumbs_up`, `upvote`, or any emoji.
+- `slug`: A unique identifier. Defaults to the current page's path. Useful if you want more than one button on the same page.
+- `label`: The accessibility label for the button. Defaults to "Like this post".
+
 ## Code shortcodes
 
 ### Show source or path
@@ -216,7 +238,7 @@ If you set the `name` to a URL (i.e. it starts with `http` or `https`), you can 
 
 {{ admonition(type="warning", title="JavaScript required", text="The clickable URL feature requires JavaScript. To enable it, set `code_block_name_links = true` on the `[extra]` section of your page, section, or `config.toml`.") }}
 
-```.gitignore,name=https://github.com/welpo/doteki/blob/main/.gitignore
+```plain,name=https://github.com/welpo/doteki/blob/main/.gitignore
 __pycache__/
 *coverage*
 .vscode/
@@ -311,7 +333,7 @@ Display lines 3 to 7 (both inclusive) of a local file:
 
 ### Admonitions
 
-Bring attention to information with these admonition shortcodes. They come in five `type`s: `note`, `tip`, `info`, `warning`, and `danger`.
+Bring attention to information with these admonition/alert shortcodes. They come in five `type`s: `note`, `tip`, `info`, `warning`, and `danger`.
 
 {{ admonition(type="note", text="Some **content** with _Markdown_ `syntax`. Check [this `api`](#).") }}
 

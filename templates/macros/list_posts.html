@@ -20,17 +20,26 @@
         {% endif %}
     {% endfor %}
 
+    {# Pinned posts are always shown separately on page 1, so exclude them from any paginated slice #}
+    {% set page_posts_without_pinned = [] %}
+    {% for post in posts %}
+        {% if not post.extra.pinned %}
+            {% set_global page_posts_without_pinned = page_posts_without_pinned | concat(with=post) %}
+        {% endif %}
+    {% endfor %}
+
     {# On page 1 or when no pagination, show pinned then regular #}
     {% if current_page == 1 %}
         {% if paginator %}
             {# With pagination: pinned + current page's posts #}
-            {% set display_posts = pinned_posts | concat(with=posts) %}
+            {% set display_posts = pinned_posts | concat(with=page_posts_without_pinned) %}
         {% else %}
             {# Without pagination: pinned + regular (no duplicates) #}
             {% set display_posts = pinned_posts | concat(with=regular_posts) %}
         {% endif %}
     {% else %}
-        {% set display_posts = posts %}
+        {# Later pages: pinned posts already shown on page 1 #}
+        {% set display_posts = page_posts_without_pinned %}
     {% endif %}
 {% else %}
     {% set display_posts = posts %}
@@ -97,15 +106,37 @@
                     {% if post.extra.local_image or post.extra.remote_image %}
                         <li class="post-thumbnail">
                             <a href="{{ post.permalink }}">
+                                {% if post.extra.local_image_dark and not post.extra.local_image %}
+                                    {{ throw(message="ERROR: `local_image_dark` requires `local_image` to be set in " ~ post.path) }}
+                                {% endif %}
+                                {% if post.extra.remote_image_dark and not post.extra.remote_image %}
+                                    {{ throw(message="ERROR: `remote_image_dark` requires `remote_image` to be set in " ~ post.path) }}
+                                {% endif %}
                                 {% if post.extra.local_image %}
+                                    {% if post.extra.local_image_dark %}
+                                        {# Show light image only in light mode, dark image only in dark mode #}
+                                        {% set meta_dark = get_image_metadata(path=post.extra.local_image_dark, allow_missing=true) %}
+                                        <img class="thumbnail-image img-dark"
+                                            alt="{{ post.extra.local_image_dark }}"
+                                            src="{{ get_url(path=post.extra.local_image_dark) }}"
+                                            {% if meta_dark.width %}width="{{ meta_dark.width }}"{% endif %}
+                                            {% if meta_dark.height %}height="{{ meta_dark.height }}"{% endif %}>
+                                    {% endif %}
                                     {% set meta = get_image_metadata(path=post.extra.local_image, allow_missing=true) %}
-                                    <img class="thumbnail-image"
+                                    <img class="thumbnail-image{% if post.extra.local_image_dark %} img-light{% endif %}"
                                         alt="{{ post.extra.local_image }}"
                                         src="{{ get_url(path=post.extra.local_image) }}"
                                         {% if meta.width %}width="{{ meta.width }}"{% endif %}
                                         {% if meta.height %}height="{{ meta.height }}"{% endif %}>
                                 {% elif post.extra.remote_image %}
-                                    <img class="thumbnail-image"
+                                    {% if post.extra.remote_image_dark %}
+                                        {# Show light image only in light mode, dark image only in dark mode #}
+                                        {% set meta_dark = get_image_metadata(path=post.extra.remote_image_dark, allow_missing=true) %}
+                                        <img class="thumbnail-image img-dark"
+                                            alt="{{ post.extra.remote_image_dark }}"
+                                            src="{{ get_url(path=post.extra.remote_image_dark) }}">
+                                    {% endif %}
+                                    <img class="thumbnail-image{% if post.extra.remote_image_dark %} img-light{% endif %}"
                                         alt="{{ post.extra.remote_image }}"
                                         src="{{ post.extra.remote_image }}">
                                 {% endif %}

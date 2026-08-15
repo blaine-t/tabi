@@ -1,7 +1,7 @@
 +++
 title = "Mastering tabi Settings: A Comprehensive Guide"
 date = 2023-09-18
-updated = 2025-06-16
+updated = 2026-01-31
 description = "Discover the many ways you can customise your tabi site."
 
 [taxonomies]
@@ -228,7 +228,7 @@ tabi's skins change the main colour of the site. You can set the skin in `config
 
 {{ image_toggler(default_src="blog/customise-tabi/skins/lavender_light.webp", toggled_src="blog/customise-tabi/skins/lavender_dark.webp", default_alt="lavender skin in light mode", toggled_alt="lavender skin in dark mode", full_width=true) }}
 
-Explore the available skins and learn how to create your own reading [the documentation](/blog/customise-tabi/#skins).
+Explore the available skins and learn how to create your own reading [the documentation](@/blog/customise-tabi/index.md#skins).
 
 ### Sans-serif Font
 
@@ -408,12 +408,17 @@ weight = 1
 
 [extra]
 local_image = "img/tabi.webp"
+invertible_image = false
 ```
 
 - `title` is the title of the project.
 - `description` is the description of the project.
 - `weight` determines the order in which the projects are shown. The lower the weight, the higher the project will appear.
 - `local_image` is the path to the image of the project. This image is shown on the projects page.
+- `local_image_dark` is an optional dark mode variant. Requires `local_image` to be set.
+- `remote_image` is a URL to an external image, as an alternative to `local_image`.
+- `remote_image_dark` is an optional dark mode variant. Requires `remote_image` to be set.
+- `invertible_image` inverts the image colours in dark mode. Useful for black and white logos/icons.
 
 When a user clicks on the image or title of a project, they will be taken to the project's page. If you'd rather have users go to an external link, you can set `link_to = "https://example.com` in the `[extra]` section of the project's `.md` file.
 
@@ -789,6 +794,37 @@ If you have enabled a system globally, but want to disable it on a specific page
 
 Read [the docs](@/blog/comments/index.md) for more information on the available systems and their setup.
 
+### iine Like Buttons {#iine}
+
+| Page | Section | `config.toml` | Follows Hierarchy | Requires JavaScript |
+|:----:|:-------:|:-------------:|:-----------------:|:-------------------:|
+|  ✅  |   ✅    |      ✅       |         ✅        |         ❌          |
+
+tabi supports [iine](https://iine.to/) like buttons for anonymous appreciation of your content. These privacy-focused buttons work without JavaScript and don't track users.
+
+To enable iine buttons globally:
+
+```toml
+[extra]
+iine = true
+```
+
+You can customise the icon used for the buttons (follows the hierarchy):
+
+```toml
+[extra]
+iine_icon = "thumbs_up"  # Options: "heart", "thumbs_up", "upvote", or any emoji
+```
+
+For multilingual sites, you can unify like counts across language versions of the same content (config-only setting; true by default):
+
+```toml
+[extra]
+iine_unified_languages = true  # Likes on /es/blog/hello/ count towards /blog/hello/
+```
+
+You can also enable iine buttons on individual pages or sections by setting `iine = true` in their front matter, or override the icon with `iine_icon = "🚀"`.
+
 ### Analytics
 
 | Page | Section | `config.toml` | Follows Hierarchy | Requires JavaScript |
@@ -804,7 +840,9 @@ You can set them up in the `[extra.analytics]` section of your `config.toml`.
 - `id`: The unique identifier for your analytics service. This varies based on the service:
   - For GoatCounter, it's the code chosen during signup. Self-hosted instances of GoatCounter don't require this field.
   - For Umami, it's the website ID.
-  - For Plausible, it's the domain name.
+  - For Plausible, it's either:
+    - **New format** (Plausible v3.1.0+): The random script name without the extension (e.g. `"pa-XXXXXX"`). Find this in your Plausible dashboard under Settings → Website Details → Script name.
+    - **Legacy format**: Your domain name (e.g. `"example.com"`). Use this if you need to send stats to multiple dashboards simultaneously, as the new format doesn't support this feature. See [Plausible's script update guide](https://plausible.io/docs/script-update-guide) for details.
 
 - `self_hosted_url`: Optional. Use this field to specify the URL for self-hosted instances of your chosen analytics service. The base URL differs based on your specific setup. Some examples:
   - For GoatCounter: `"https://stats.example.com"`
@@ -863,6 +901,8 @@ To use a custom icon, you can add it to your site's `static/social_icons` direct
 |  ❌  |   ❌    |      ✅       |         ❌        |         ❌          |
 
 You can add a link to your RSS/Atom feed to the footer with `feed_icon = true`.
+
+To use a custom icon, set `feed_icon` to the icon name (e.g. `feed_icon = "square-rss"`). The icon must exist in `static/social_icons/` (without the `.svg` extension).
 
 Note for Zola 0.19.X users: when there are two filenames in `feed_filenames`, only the first one will be linked in the footer.
 
@@ -952,11 +992,24 @@ By default, the date is shown below the post title. You can hide it with `show_d
 |:----:|:-------:|:-------------:|:-----------------:|:-------------------:|
 |  ❌  |   ❌    |      ✅       |         ❌        |         ❌          |
 
-tabi has two date formats: `long_date_format` and `short_date_format`. The short format is used in a post's metadata, while the long format is used when listing posts (i.e. on the [blog section](@/blog/_index.md) or the [main page](@/_index.md)).
+tabi has three date formats: `long_date_format`, `short_date_format` and `archive_date_format`. The short format is used in a post's metadata, while the long format is used when listing posts (i.e. on the [blog section](@/blog/_index.md) or the [main page](@/_index.md)). The archive format is used to display day and month on the archive page.
 
-The default is "6th July 2049" for both formats in English. For other languages, the defaut is `"%d %B %Y"` for the long format and `"%-d %b %Y"` for the short format.
+The default is "6th July 2049" for `long_date_format` and `short_date_format` in English. For other languages, the defaut is `"%d %B %Y"` for the long format and `"%-d %b %Y"` for the short format. The universal default for the archive format is `"%d %b"`.
 
 In Zola, time formatting syntax is inspired fom strftime. A full reference is available in the [chrono docs](https://docs.rs/chrono/0.4.31/chrono/format/strftime/index.html).
+
+#### Per-language date formats
+
+You can customise date formats for specific languages using the `date_formats` array in `config.toml`:
+
+```toml
+date_formats = [
+    { lang = "es", long = "%d de %B de %Y", short = "%-d %b %Y", archive = "%d de %b" },
+    { lang = "de", long = "%d. %B %Y", short = "%d.%m.%Y", archive = "%d. %b" },
+]
+```
+
+This allows different languages to use culturally appropriate date formatting (e.g. Spanish "3 de febrero de 2024" vs German "3. Februar 2024").
 
 ### Custom Separator
 

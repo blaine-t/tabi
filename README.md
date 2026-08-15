@@ -56,6 +56,7 @@ tabi has a perfect score on Google's Lighthouse audit:
 - [X] [Mermaid support](https://welpo.github.io/tabi/blog/shortcodes/#mermaid-diagrams) to create diagrams and charts with text.
 - [X] [Local search](https://welpo.github.io/tabi/blog/mastering-tabi-settings/#search) with an accessible, multi-lingual interface.
 - [X] [Custom Twitter card](https://welpo.github.io/tabi/blog/mastering-tabi-settings/#social-media-cards) and automatic Open Graph tags.
+- [X] Anonymous [like buttons](https://welpo.github.io/tabi/blog/mastering-tabi-settings/#iine) powered by [iine](https://iine.to).
 - [X] [KaTeX](https://katex.org/) support for mathematical notation.
 - [X] [Stylized and human readable Atom feed](https://welpo.github.io/tabi/atom.xml).
 - [X] [Stylized and human readable sitemap](https://welpo.github.io/tabi/sitemap.xml).
@@ -121,9 +122,9 @@ title = "Your Site Title"
 4. Configure code block highlighting in your `config.toml`:
 
 ```toml
-[markdown]
-highlight_code = true
-highlight_theme = "css"
+[markdown.highlighting]
+theme = "catppuccin-frappe"
+style = "class"
 ```
 
 5. Create a `content/_index.md` file. This file controls how your home page looks and behaves. Choose one of the following options:
@@ -218,6 +219,9 @@ git pull
 | [idle-ti.me](https://idle-ti.me/) | Jérôme Ramette ([be-next](https://github.com/be-next)) | Personal blog | [Source](https://github.com/be-next/idle-ti.me) |
 | [tzinm.me](https://tzinm.me/) | [Tzinm](https://github.com/tzinm) | Personal blog | [Source](https://codeberg.org/tzinm/blog) |
 | [b1n.io](https://b1n.io) | [b1nhack](https://github.com/b1nhack) | Linux kernel vulnerability researcher | [Source](https://github.com/b1nhack/blog) |
+| [posixlycorrect.com](https://posixlycorrect.com/) | [Fabian Montero](https://git.posixlycorrect.com/fabian) | Personal homepage | [Source](https://git.posixlycorrect.com/fabian/homepage) |
+| [Coded Chords](https://codedchords.dev/) | [yostos](https://github.com/yostos) | Personal tech blog | [Source](https://github.com/yostos/blog-yostos) |
+| [soumendrak.com](https://www.soumendrak.com) | [Soumendra Kumar Sahoo](https://github.com/soumendrak) | Personal blog: AI observability, engineering, and weekly notes | &mdash; |
 
 Using tabi? Feel free to create a PR and add your site to this list.
 

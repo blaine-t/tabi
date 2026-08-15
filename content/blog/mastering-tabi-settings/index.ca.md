@@ -1,7 +1,7 @@
 +++
 title = "Domina la configuració de tabi: guia completa"
 date = 2023-09-18
-updated = 2025-06-16
+updated = 2026-01-31
 description = "Descobreix les múltiples maneres en què pots personalitzar tabi."
 
 [taxonomies]
@@ -223,7 +223,7 @@ Les skins («pells») de tabi canvien el color principal del lloc web. Pots conf
 
 {{ image_toggler(default_src="blog/customise-tabi/skins/lavender_light.webp", toggled_src="blog/customise-tabi/skins/lavender_dark.webp", default_alt="pell lavender en mode clar", toggled_alt="pell lavender en mode fosc", full_width=true) }}
 
-Explora les skins disponibles i aprèn com crear la teva pròpia consultant [la documentació](/ca/blog/customise-tabi/#skins).
+Explora les skins disponibles i aprèn com crear la teva pròpia consultant [la documentació](@/blog/customise-tabi/index.ca.md#skins).
 
 ### Font sans serif (pal sec)
 
@@ -402,12 +402,17 @@ weight = 1
 
 [extra]
 local_image = "img/tabi.webp"
+invertible_image = false
 ```
 
 - `title` és el títol del projecte.
 - `description` és la descripció del projecte.
 - `weight` determina l'ordre en què es mostren els projectes. Com menor sigui el pes, més amunt apareixerà el projecte.
 - `local_image` és la ruta de la imatge del projecte. Aquesta imatge es mostra a la pàgina de projectes.
+- `local_image_dark` és una variant opcional per al mode fosc. Requereix que `local_image` estigui configurat.
+- `remote_image` és una URL a una imatge externa, com a alternativa a `local_image`.
+- `remote_image_dark` és una variant opcional per al mode fosc. Requereix que `remote_image` estigui configurat.
+- `invertible_image` inverteix els colors de la imatge en mode fosc. Útil per a logotips o icones en blanc i negre.
 
 Quan un usuari faci clic a la imatge o al títol d'un projecte, serà portat a la pàgina del projecte. Si prefereixes que els usuaris vagin a un enllaç extern, pots establir `link_to = "https://example.com"` a la secció `[extra]` del fitxer `.md` del projecte.
 
@@ -780,6 +785,35 @@ Si has activat un sistema de forma global i vols desactivar-lo per a una pàgina
 
 Llegeix la [documentació](@/blog/comments/index.ca.md) per a més informació sobre els sistemes disponibles i la seva configuració.
 
+### Botons d'iine {#iine}
+
+| Pàgina | Secció | `config.toml` | Segueix la jerarquia | Requereix JavaScript |
+|:------:|:------:|:-------------:|:--------------------:|:--------------------:|
+|   ✅   |   ✅   |      ✅       |          ✅          |         ❌          |
+
+tabi permet botons d'[iine](https://iine.to/) per mostrar apreciació anònima pel teu contingut. Aquests botons centrats en la privadesa funcionen sense JavaScript i no rastegen usuaris.
+
+Per activar els botons iine globalment:
+
+```toml
+[extra]
+iine = true
+```
+
+Pots personalitzar la icona usada als botons (segueix la jerarquia):
+
+```toml
+[extra]
+iine_icon = "thumbs_up"  # Opcions: "heart", "thumbs_up", "upvote", o qualsevol emoji
+```
+
+Per a llocs multilingües, pots unificar els recomptes de likes entre versions en diferents idiomes del mateix contingut (configuració només de config; valor per defecte és `true`):
+
+```toml
+[extra]
+iine_unified_languages = true  # Els likes a /ca/blog/hello/ compten cap a /blog/hello/
+```
+
 ### Anàlisi web
 
 | Pàgina | Secció  | `config.toml` | Segueix la jerarquia | Requereix JavaScript |
@@ -795,7 +829,9 @@ Pots configurar-los en la secció `[extra.analytics]` del teu arxiu `config.toml
 - `id`: l'identificador únic per al teu servei d'anàlisi. Això varia segons el servei:
   - Per a GoatCounter, és el codi triat durant el registre. Instàncies auto-allotjades de GoatCounter no requereixen aquest camp.
   - Per a Umami, és l'ID del lloc web.
-  - Per a Plausible, és el nom de domini.
+  - Per a Plausible, pot ser:
+    - **Format nou** (Plausible v3.1.0+): El nom d'script aleatori sense l'extensió (ex. `"pa-XXXXXX"`). Troba'l al teu panell de Plausible a Configuració → Detalls del lloc web → Nom de l'script.
+    - **Format heretat**: El teu nom de domini (ex. `"example.com"`). Útil si necessites enviar estadístiques a múltiples panells simultàniament; el nou format no admet aquesta funcionalitat. Consulta la [guia d'actualització d'scripts de Plausible](https://plausible.io/docs/script-update-guide) per a més detalls.
 
 - `self_hosted_url`: Opcional. Utilitza aquest camp per especificar l'URL si tens una instància auto-allotjada. L'URL base variarà segons la teva configuració particular. Alguns exemples:
   - Per a GoatCounter: `"https://stats.example.com"`
@@ -852,6 +888,8 @@ Per utilitzar una icona personalitzada, pots afegir-la al directori `static/soci
 |   ❌   |   ❌    |      ✅       |          ❌           |         ❌          |
 
 Pots afegir un enllaç al teu feed RSS/Atom al peu de pàgina amb `feed_icon = true`.
+
+Per utilitzar una icona personalitzada, estableix `feed_icon` amb el nom de la icona (per exemple, `feed_icon = "square-rss"`). La icona ha d'existir a `static/social_icons/` (sense l'extensió `.svg`).
 
 Nota pels usuaris de Zola 0.19.X: quan hi ha dos noms de fitxer a `feed_filenames`, només s'enllaçarà el primer al peu de pàgina.
 
@@ -939,11 +977,24 @@ Per defecte, la data es mostra sota el títol de la publicació. Pots amagar-la 
 |:------:|:-------:|:-------------:|:---------------------:|:-------------------:|
 |   ❌   |   ❌    |      ✅       |          ❌           |         ❌          |
 
-tabi té dos formats de data: `long_date_format` i `short_date_format`. El format curt s'utilitza a les metadades d'una publicació, mentre que el format llarg s'utilitza al llistar les publicacions (és a dir, a la [secció de blog](/ca/blog/) o a la [pàgina principal](/ca/)).
+tabi té tres formats de data: `long_date_format`, `short_date_format` i `archive_data_format`. El format curt s'utilitza a les metadades d'una publicació, mentre que el format llarg s'utilitza al llistar les publicacions (és a dir, a la [secció de blog](/ca/blog/) o a la [pàgina principal](/ca/)). El format d'arxiu s'utilitza per mostrar el dia i el mes a la pàgina d'arxiu.
 
-Per defecte és "6th July 2049" per a ambdós formats en anglès. Per a altres idiomes, el predeterminat és `"%d %B %Y"` per al format llarg i `"%-d %b %Y"` per al format curt.
+Per defecte és "6th July 2049" per als formats curt i llarg en anglès. Per a altres idiomes, el predeterminat és `"%d %B %Y"` per al format llarg i `"%-d %b %Y"` per al format curt. El format d'arxiu predeterminat universal és `"%d %b"`.
 
 A Zola, la sintaxi per al format de temps està inspirada en strftime. Una referència completa està disponible a la [documentació de chrono](https://docs.rs/chrono/0.4.31/chrono/format/strftime/index.html).
+
+#### Formats de data per idioma
+
+Pots personalitzar els formats de data per idiomes específics utilitzant la matriu `date_formats` a `config.toml`:
+
+```toml
+date_formats = [
+    { lang = "es", long = "%d de %B de %Y", short = "%-d %b %Y", archive = "%d de %b" },
+    { lang = "de", long = "%d. %B %Y", short = "%d.%m.%Y", archive = "%d. %b" },
+]
+```
+
+Això permet que diferents idiomes utilitzin formats de data culturalment apropiats (per exemple, "6. Juli 2049" per a alemany VS "6 de julio de 2049" per a espanyol).
 
 ### Separador personalitzat
 

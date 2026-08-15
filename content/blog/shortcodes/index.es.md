@@ -1,7 +1,7 @@
 +++
 title = "Shortcodes personalizados"
 date = 2023-02-19
-updated = 2025-02-15
+updated = 2025-10-21
 description = "Este tema incluye algunos shortcodes personalizados útiles que puedes utilizar para mejorar tus publicaciones. Puedes mostrar imágenes que se adapten a los temas claro y oscuro, dar formato a una sección de referencias con un aspecto profesional, y más."
 
 [taxonomies]
@@ -186,6 +186,28 @@ Todos los otros shortcodes de imágenes pueden usar el ancho completo asignando 
 {{/* full_width_image(src="img/amsterdam_by_oskerwyld.webp", alt="Fotografía de un canal en Ámsterdam") */}}
 ```
 
+## Shortcodes sociales
+
+### iine
+
+{{ aside(text="Para añadirlo a todas las publicaciones, establece `iine = true` en la sección `[extra]` de tu `config.toml`.") }}
+
+Este shortcode te permite añadir botones adicionales de [iine.to](https://iine.to) a tus publicaciones, como este:
+
+{{ iine(slug="/blog/shortcodes/demo-button") }}
+
+#### Uso
+
+```
+{{/* iine(icon="heart", slug="/post/mi-slug-de-post/like", label="Me gusta esta publicación") */}}
+```
+
+El shortcode acepta los siguientes parámetros opcionales:
+
+- `icon`: El icono a mostrar. Puede ser `heart`, `thumbs_up`, `upvote`, o cualquier emoji.
+- `slug`: Un identificador único. Por defecto es la ruta de la página actual. Útil si quieres más de un botón en la misma página.
+- `label`: La etiqueta de accesibilidad para el botón. Por defecto es "Me gusta esta publicación".
+
 ## Shortcodes de código
 
 ### Mostrar ruta o URL
@@ -214,7 +236,7 @@ Si estableces el `name` como una URL (es decir, comienza con `http` o `https`), 
 
 {{ admonition(type="warning", title="JavaScript requerido", text="La función de URLs clickables requiere JavaScript. Para habilitarla, configura `code_block_name_links = true` en la sección `[extra]` de tu página, sección, o `config.toml`.") }}
 
-```.gitignore,name=https://github.com/welpo/doteki/blob/main/.gitignore
+```plain,name=https://github.com/welpo/doteki/blob/main/.gitignore
 __pycache__/
 *coverage*
 .vscode/
@@ -309,7 +331,7 @@ Mostar sólo las líneas 3 a 5 de un archivo remoto:
 
 ### Advertencias
 
-Destaca información con estos shortcodes. Hay cinco tipos (`type`): `note`, `tip`, `info`, `warning`, y `danger`.
+Destaca información con estos shortcodes de advertencia/alerta. Hay cinco tipos (`type`): `note`, `tip`, `info`, `warning`, y `danger`.
 
 {{ admonition(type="note", text="Contenido con **sintaxis** *Markdown*. Consulta [esta `api`](#).") }}
 

@@ -1,7 +1,7 @@
 +++
 title = "Shortcodes personalitzats"
 date = 2023-02-19
-updated = 2025-02-15
+updated = 2025-10-21
 description = "Aquest tema inclou alguns shortcodes personalitzats útils que pots utilitzar per millorar les teves publicacions. Ja sigui per mostrar imatges que s'adapten als temes clar i fosc, o per donar format a una secció de referències amb un aspecte professional, aquests shortcodes personalitzats t'ajudaran."
 
 [taxonomies]
@@ -28,7 +28,7 @@ Per incloure un diagrama Mermaid a la teva publicació, cal fer dues coses:
 
 2. Utilitza el shortcode `mermaid()` per definir el teu diagrama. Per exemple:
 
-```txt
+```plain
 {%/* mermaid() */%}
 classDiagram
     class DistorsionsCognitives {
@@ -187,6 +187,28 @@ Tots els altres shortcodes d'imatges poden utilizar l'amplada completa assignant
 {{/* full_width_image(src="img/amsterdam_by_oskerwyld.webp", alt="Fotografia d'un canal a Àmsterdam") */}}
 ```
 
+## Shortcodes socials
+
+### iine
+
+{{ aside(text="Per afegir-lo a totes les publicacions, estableix `iine = true` a la secció `[extra]` del teu `config.toml`.") }}
+
+Aquest shortcode et permet afegir botons addicionals d'[iine.to](https://iine.to) a les teves publicacions, com aquest:
+
+{{ iine(slug="/blog/shortcodes/demo-button") }}
+
+#### Ús
+
+```
+{{/* iine(icon="heart", slug="/post/el-meu-slug-de-post/like", label="M'agrada aquesta publicació") */}}
+```
+
+El shortcode accepta els següents paràmetres opcionals:
+
+- `icon`: La icona a mostrar. Pot ser `heart`, `thumbs_up`, `upvote`, o qualsevol emoji.
+- `slug`: Un identificador únic. Per defecte és la ruta de la pàgina actual. Útil si vols més d'un botó a la mateixa pàgina.
+- `label`: L'etiqueta d'accessibilitat per al botó. Per defecte és "M'agrada aquesta publicació".
+
 ## Shortcodes de codi
 
 ### Mostrar ruta o URL
@@ -215,7 +237,7 @@ Si estableixes el `name` com una URL (és a dir, comença amb `http` o `https`),
 
 {{ admonition(type="warning", title="JavaScript necessari", text="La funció d'URLs clicables requereix JavaScript. Per habilitar-la, configura `code_block_name_links = true` a la secció `[extra]` de la teva pàgina, secció, o `config.toml`.") }}
 
-```.gitignore,name=https://github.com/welpo/doteki/blob/main/.gitignore
+```plain,name=https://github.com/welpo/doteki/blob/main/.gitignore
 __pycache__/
 *coverage*
 .vscode/
@@ -238,7 +260,7 @@ El shortcode `add_src_to_code_block` segueix funcionant per retrocompatibilitat 
 
 ````
 {{/* add_src_to_code_block(src="https://github.com/welpo/doteki/blob/main/.gitignore") */}}
-```.gitignore
+```plain
 **pycache**/
 *coverage*
 .vscode/
@@ -322,7 +344,7 @@ Mostreu només les línies 3 a 5 d'un arxiu local:
 
 ### Advertències
 
-Destaca informació amb aquests shortcodes. Hi ha cinc tipus (`type`): `note`, `tip`, `info`, `warning`, i `danger`.
+Destaca informació amb aquests shortcodes d'advertència/alerta. Hi ha cinc tipus (`type`): `note`, `tip`, `info`, `warning`, i `danger`.
 
 {{ admonition(type="note", text="Contingut amb **sintaxi** *Markdown*. Consulta [aquesta `api`](#).") }}
 

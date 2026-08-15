@@ -1,7 +1,7 @@
 +++
 title = "Domina la configuración de tabi: guía completa"
 date = 2023-09-18
-updated = 2025-06-16
+updated = 2026-01-31
 description = "Descubre las múltiples maneras en que puedes personalizar tabi."
 
 [taxonomies]
@@ -224,7 +224,7 @@ Las pieles de tabi cambian el color principal del sitio. Puedes configurar la pi
 
 {{ image_toggler(default_src="blog/customise-tabi/skins/lavender_light.webp", toggled_src="blog/customise-tabi/skins/lavender_dark.webp", default_alt="piel lavender en modo claro", toggled_alt="piel lavender en modo oscuro", full_width=true) }}
 
-Explora las pieles disponibles y aprende cómo crear la tuya propia consultando [la documentación](/es/blog/customise-tabi/#skins).
+Explora las pieles disponibles y aprende cómo crear la tuya propia consultando [la documentación](@/blog/customise-tabi/index.es.md#skins).
 
 ### Fuente sans serif (paloseco)
 
@@ -403,12 +403,17 @@ weight = 1
 
 [extra]
 local_image = "img/tabi.webp"
+invertible_image = false
 ```
 
 - `title` es el título del proyecto.
 - `description` es la descripción del proyecto.
 - `weight` determina el orden en el que se muestran los proyectos. Cuanto menor sea el peso, más arriba aparecerá el proyecto.
 - `local_image` es la ruta de la imagen del proyecto. Esta imagen se muestra en la página de proyectos.
+- `local_image_dark` es una variante opcional para el modo oscuro. Requiere que `local_image` esté configurado.
+- `remote_image` es una URL a una imagen externa, como alternativa a `local_image`.
+- `remote_image_dark` es una variante opcional para el modo oscuro. Requiere que `remote_image` esté configurado.
+- `invertible_image` invierte los colores de la imagen en modo oscuro. Útil para logotipos o iconos en blanco y negro.
 
 Cuando un usuario haga clic en la imagen o el título de un proyecto, será llevado a la página del proyecto. Si prefieres que los usuarios vayan a un enlace externo, puedes establecer `link_to = "https://example.com"` en la sección `[extra]` del archivo `.md` del proyecto.
 
@@ -781,6 +786,37 @@ Si has activado un sistema globalmente, pero quieres desactivarlo en una página
 
 Lee la [documentación](@/blog/comments/index.es.md) para obtener más información sobre los sistemas disponibles y su configuración.
 
+### Botones de iine {#iine}
+
+| Página | Sección | `config.toml` | Sigue la jerarquía | Requiere JavaScript |
+|:------:|:-------:|:-------------:|:-------------------:|:-------------------:|
+|   ✅   |   ✅    |      ✅       |          ✅         |         ❌          |
+
+tabi soporta botones de [iine](https://iine.to/) para mostrar apreciación anónima por tu contenido. Estos botones centrados en la privacidad funcionan sin JavaScript y no rastrean usuarios.
+
+Para activar los botones iine globalmente:
+
+```toml
+[extra]
+iine = true
+```
+
+Puedes personalizar el icono usado en los botones (esta configuración sigue la jerarquía):
+
+```toml
+[extra]
+iine_icon = "thumbs_up"  # Opciones: "heart", "thumbs_up", "upvote", o cualquier emoji
+```
+
+Para sitios multilingües, puedes unificar los conteos de likes entre versiones en diferentes idiomas del mismo contenido (configuración solo de config; valor predeterminado: `true`):
+
+```toml
+[extra]
+iine_unified_languages = true  # Los likes en /es/blog/hello/ cuentan hacia /blog/hello/
+```
+
+También puedes activar los botones iine en páginas o secciones individuales estableciendo `iine = true` en su front matter, o personalizar el icono con `iine_icon = "🚀"`.
+
 ### Análisis web
 
 | Página | Sección  | `config.toml` | Sigue Jerarquía | Requiere JavaScript |
@@ -796,7 +832,9 @@ Puedes configurarlos en la sección `[extra.analytics]` de tu archivo `config.to
 - `id`: el identificador único para tu servicio de análisis. Esto varía según el servicio:
   - Para GoatCounter, es el código elegido durante el registro. Instancias auto-alojadas de GoatCounter no requieren este campo.
   - Para Umami, es la ID del sitio web.
-  - Para Plausible, es el nombre de dominio.
+  - Para Plausible, puede ser:
+    - **Formato nuevo** (Plausible v3.1.0+): El nombre de script aleatorio sin la extensión (ej. `"pa-XXXXXX"`). Encuéntralo en tu panel de Plausible en Ajustes → Detalles del sitio web → Nombre del script.
+    - **Formato heredado**: Tu nombre de dominio (ej. `"example.com"`). Útil si necesitas enviar estadísticas a múltiples paneles simultáneamente; el nuevo formato no admite esta funcionalidad. Consulta la [guía de actualización de scripts de Plausible](https://plausible.io/docs/script-update-guide) para más detalles.
 
 - `self_hosted_url`. Opcional. Utiliza este campo para especificar la URL si tienes una instancia auto-alojada. La URL base variará según tu configuración particular. Algunos ejemplos:
   - Para GoatCounter: `"https://stats.example.com"`
@@ -855,6 +893,8 @@ Para usar un icono personalizado, puedes añadirlo al directorio `static/social_
 |   ❌   |   ❌    |      ✅       |         ❌        |         ❌          |
 
 Puedes añadir un enlace a tu feed RSS/Atom en el pie de página con `feed_icon = true`.
+
+Para usar un icono personalizado, establece `feed_icon` con el nombre del icono (por ejemplo, `feed_icon = "square-rss"`). El icono debe existir en `static/social_icons/` (sin la extensión `.svg`).
 
 Nota para usuarios de Zola 0.19.X: cuando hay dos nombres de archivo en `feed_filenames`, solo se enlazará el primero en el pie de página.
 
@@ -942,11 +982,24 @@ Por defecto, la fecha se muestra debajo del título de la publicación. Puedes o
 |:------:|:-------:|:-------------:|:------------------:|:-------------------:|
 |   ❌   |   ❌    |      ✅       |         ❌         |         ❌          |
 
-tabi tiene dos formatos de fecha: `long_date_format` y `short_date_format`. El formato corto se utiliza en los metadatos de una publicación, mientras que el formato largo se utiliza al listar las publicaciones (es decir, en la [sección de blog](/es/blog/) o en la [página principal](/es/)).
+tabi tiene tres formatos de fecha: `long_date_format`, `short_date_format` y `archive_date_format`. El formato corto se utiliza en los metadatos de una publicación, mientras que el formato largo se utiliza al listar las publicaciones (es decir, en la [sección de blog](/es/blog/) o en la [página principal](/es/)). El formato de archivo se usa para mostrar el día y el mes en la página de archivo.
 
-Por defecto es "6th July 2049" para ambos formatos en inglés. Para otros idiomas, el predeterminado es `"%d %B %Y"` para el formato largo y `"%-d %b %Y"` para el formato corto.
+Por defecto es "6th July 2049" para los formatos corto y largo en inglés. Para otros idiomas, el predeterminado es `"%d %B %Y"` para el formato largo y `"%-d %b %Y"` para el formato corto. El formato de archivo predeterminado universal es `"%d %b"`.
 
 En Zola, la sintaxis para el formateo de tiempo está inspirada en strftime. Una referencia completa está disponible en la [documentación de chrono](https://docs.rs/chrono/0.4.31/chrono/format/strftime/index.html).
+
+#### Formatos de fecha por idioma
+
+Puedes personalizar los formatos de fecha para idiomas específicos usando la matriz `date_formats` en `config.toml`:
+
+```toml
+date_formats = [
+    { lang = "es", long = "%d de %B de %Y", short = "%-d %b %Y", archive = "%d de %b" },
+    { lang = "de", long = "%d. %B %Y", short = "%d.%m.%Y", archive = "%d. %b" },
+]
+```
+
+Esto permite que diferentes idiomas usen formatos de fecha culturalmente apropiados (por ejemplo, "6 de julio de 2049" en español o "6. Juli 2049" en alemán).
 
 ### Separador personalizado
 
